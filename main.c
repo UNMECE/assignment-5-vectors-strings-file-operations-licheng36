@@ -88,12 +88,12 @@ ss.clear();
 
 ss.str(line);
 ss >> pixel.b;
-//ss.clear();
+ss.clear();
 
 pixel_list.push_back(pixel);
 }
 
-//ifile.close();
+ifile.close();
 
 average_colors(pixel_list);
 
