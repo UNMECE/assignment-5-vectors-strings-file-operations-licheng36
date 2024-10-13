@@ -24,17 +24,27 @@ std::cout << "Average G: " << avg_g << std::endl;
 std::cout << "Average B: " << avg_b << std::endl;
 }
 
-void flip_vertically(std::vector<Pixel> &pixel_list){
-int height = 256; 
-int width = 512;  
-std::vector<Pixel> flipped_list(height * width);
+void flip_vertically(std::vector<Pixel> &pixel_list, std::vector<Pixel> &flipped_list){
+int height = 256;
+int width = 512;
 
-for (int y = 0; y < height; y++) {
-for (int x = 0; x < width ; x++) {
-flipped_list[(height - 1 - y) * width + x] = pixel_list[y * width + x];
+int max = flipped_list.size();
+
+for (int y = 0; y < max; y += height) { 
+int end = y + height;
+int temp_itr = 0;
+for (int x = y; x < end; x++) {
+int clone_index = end - temp_itr - 1;
+temp_itr++;
+
+flipped_list[x].r = pixel_list[clone_index].r;
+flipped_list[x].g = pixel_list[clone_index].g;
+flipped_list[x].b = pixel_list[clone_index].b;
+
+flipped_list[x].x = pixel_list[x].x;
+flipped_list[x].y = pixel_list[x].y;
 }
 }
-pixel_list = flipped_list;
 }
 
 int main() {
@@ -78,16 +88,17 @@ ss.clear();
 
 ss.str(line);
 ss >> pixel.b;
-ss.clear();
+//ss.clear();
 
 pixel_list.push_back(pixel);
 }
 
-ifile.close();
+//ifile.close();
 
 average_colors(pixel_list);
 
-flip_vertically(pixel_list);
+std::vector<Pixel> flipped(pixel_list.size());
+flip_vertically(pixel_list,flipped);
 
 
 std::ofstream ofile("flipped.dat", std::ios::out);
@@ -97,7 +108,7 @@ return -1;
 }
 
 for (size_t i=0; i<pixel_list.size();i++) {
-Pixel& pixel=pixel_list[i];
+Pixel& pixel=flipped[i];
 ofile << pixel.x << "," << pixel.y << "," << pixel.r << "," << pixel.g << "," << pixel.b << std::endl;
 }
 
